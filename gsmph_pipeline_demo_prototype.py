@@ -8,21 +8,48 @@ from nltk.tag import StanfordNERTagger
 from nltk.tokenize import word_tokenize
 from nltk.internals import config_java
 from transformers import AutoTokenizer, AutoModelForTokenClassification, pipeline
+from concurrent.futures import ThreadPoolExecutor
+import copy
 
 
 # JAVA SETUP
-JAVA_PATH = r"C:\Program Files\Java\jdk-20\bin\java.exe"
+JAVA_PATH = r"C:\Program Files\Common Files\Oracle\Java\javapath\java.exe"
 config_java(bin=JAVA_PATH)
 
 # STANFORD NER SETUP (Tool 1 -- the real 7-class MUC model)
-STANFORD_NER_JAR = r"F:\school\Ths\stanford-ner-2020-11-17\stanford-ner.jar"
-STANFORD_NER_MODEL = r"F:\school\Ths\stanford-ner-2020-11-17\classifiers\english.muc.7class.distsim.crf.ser.gz"
+STANFORD_NER_JAR = r"C:\nltk_data\stanford-ner-2020-11-17\stanford-ner.jar"
+STANFORD_NER_MODEL = r"C:\nltk_data\stanford-ner-2020-11-17\classifiers\english.muc.7class.distsim.crf.ser.gz"
 
 stanford_tagger = StanfordNERTagger(
     STANFORD_NER_MODEL,
     STANFORD_NER_JAR,
     encoding="utf-8",
 )
+
+_ner_cache = {}
+_orig_tag = stanford_tagger.tag
+
+def _cached_tag(tokens):
+    key = tuple(tokens)
+    if key not in _ner_cache:          # fallback: still works if a text wasn't prefetched
+        _ner_cache[key] = _orig_tag(tokens)
+    return _ner_cache[key]
+
+stanford_tagger.tag = _cached_tag   
+
+def prefetch_stanford(texts, chunk_size=200, workers=4):
+    """Tag all texts in a few big Java launches instead of one per problem."""
+    token_lists = [word_tokenize(t) for t in texts]
+    chunks = [token_lists[i:i + chunk_size] for i in range(0, len(token_lists), chunk_size)]
+    print(f"Prefetching Stanford NER: {len(token_lists)} problems in {len(chunks)} batches...")
+    with ThreadPoolExecutor(max_workers=workers) as ex:
+        for chunk, tagged_sents in zip(chunks, ex.map(stanford_tagger.tag_sents, chunks)):
+            for toks, tagged in zip(chunk, tagged_sents):
+                _ner_cache[tuple(toks)] = tagged
+    print("Prefetch done.")
+
+
+
 
 nlp = spacy.load("en_core_web_sm")
 
@@ -404,6 +431,40 @@ def tool5_food_ner(text, already_flagged_texts):
 
     return flagged
 
+def make_cached_pipe(pipe):
+    cache = {}
+    def wrapped(text, *args, **kwargs):
+        if text not in cache:               # fallback: unbatched path still works
+            cache[text] = pipe(text, *args, **kwargs)
+        return copy.deepcopy(cache[text])   # callers can't corrupt the cache
+    wrapped.cache = cache
+    wrapped.raw = pipe
+    return wrapped
+
+food_ner_pipe = make_cached_pipe(food_ner_pipe)
+misc_ner_pipe = make_cached_pipe(misc_ner_pipe)
+
+def prefetch_hf(wrapped_pipe, texts, name, chunk_size=256, batch_size=32):
+    texts = sorted(set(texts), key=len)     # similar lengths per batch = less padding
+    for start in range(0, len(texts), chunk_size):
+        chunk = texts[start:start + chunk_size]
+        try:
+            outs = wrapped_pipe.raw(chunk, batch_size=batch_size)
+            for t, o in zip(chunk, outs):
+                wrapped_pipe.cache[t] = o
+        except Exception as e:
+            print(f"  [{name} prefetch warning] chunk failed, will run unbatched: {e}")
+        print(f"{name}: {min(start + chunk_size, len(texts))}/{len(texts)}")
+
+_doc_cache = {}
+
+def prefetch_spacy(texts, batch_size=64):
+    print(f"spaCy: processing {len(texts)} problems...")
+    for text, doc in zip(texts, nlp.pipe(texts, batch_size=batch_size)):
+        _doc_cache[text] = doc
+    
+
+
 
 def tool6_misc_ner(text, already_flagged_texts):
     """Tool 6 (dslim/distilbert-NER, MISC tag only) -- a low-confidence
@@ -643,11 +704,13 @@ def process_problem(text):
         if lbl=="PERSON":
             stanford_person_tokens.update(t.split())
 
-    doc = nlp(text)
+    doc = _doc_cache.get(text)
+    if doc is None:
+        doc = nlp(text)
     pos_hits = tool2_pos(doc, ner_texts, stanford_person_tokens)
     pos_texts = {t for t, _ in pos_hits}
 
-    regex_hits = tool3_regex(text, ner_texts | pos_texts)
+    regex_hits = tool3_regex(text, ner_texts |  pos_texts)
     regex_texts = set(regex_hits)
 
     already_flagged = ner_texts | pos_texts | regex_texts
@@ -688,6 +751,11 @@ def build_excel_report(output_path="gsmph_candidates.xlsx", csv_path=GSM8K_CSV_P
     if problems is None:
         problems = load_problems(csv_path)
 
+
+    prefetch_stanford(problems)
+    prefetch_spacy(problems)
+    prefetch_hf(food_ner_pipe, problems, "Food NER")
+    prefetch_hf(misc_ner_pipe, problems, "MISC NER")
     wb = Workbook()
 
     # ---------- Sheet 1: Candidates (Detailed) ----------
@@ -837,4 +905,6 @@ def build_excel_report(output_path="gsmph_candidates.xlsx", csv_path=GSM8K_CSV_P
 
 
 if __name__ == "__main__":
-    build_excel_report(output_path="gsmph_candidates.xlsx", csv_path=GSM8K_CSV_PATH)
+    all_problems = load_problems(GSM8K_CSV_PATH)
+    sample = all_problems
+    build_excel_report(output_path="test.xlsx", problems=sample)
