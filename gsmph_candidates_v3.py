@@ -15,7 +15,11 @@ What changed from v2 (driven by real failures in the sample output)
   4. reject_terms.txt. Terms you reject repeatedly are hidden on the next run
      (build it with --learn-rejects).
   5. Score column (model confidence) so you can pick thresholds from your own data.
-  6. --precision-report is case-insensitive and says how many rows it read/counted.
+  6. Object support votes. A WordNet-only object stays Tier 3; it moves to Tier 2 when another INDEPENDENT
+     source agrees: 'counted' (the problem counts it: "7 starfish", "how many gnomes", "a box of") or 'concrete'
+     (optional Brysbaert concreteness ratings, --concreteness FILE). A WordNet hypernym walk fills the optional
+     Suggested Pool column (same source as WordNet, so NOT a vote). v3 never imports extract_pool.py.
+  7. --precision-report is case-insensitive and says how many rows it read/counted.
 
 Usage
   python gsmph_candidates_v3.py --csv gsm8k.csv --limit 100 --out sample.xlsx
@@ -62,6 +66,9 @@ HF_BATCH = 32
 GSM8K_CSV_PATH = "gsm8k.csv"
 QUESTION_COLUMN_CANDIDATES = ("question", "problem", "text")
 REJECT_FILE = "reject_terms.txt"
+CONCRETE_MIN = 4.0                       # Brysbaert mean concreteness (1-5); >= this supports "physical thing"
+CONCRETENESS = {}                        # word -> rating, filled by --concreteness
+EXTRA_NAMES_FILE = "extra_names.txt"      # one first name per line; added to the name gazetteer
 REJECT_TERMS = set()                     # filled by extract(); lowercase
 
 
@@ -83,8 +90,11 @@ TIME_WORDS = {"yesterday", "today", "tomorrow", "hour", "minute", "day", "week",
               "year", "shift", "overtime", "time", "second", "weekend", "morning", "night"}
 GENERIC = {"thing", "item", "stuff", "piece", "type", "kind", "set", "pair", "lot",
            "bunch", "row", "side", "part", "end", "way", "rest", "dollar", "cent"}
-GENERIC_FOOD = {"food", "foods", "meal", "meals", "diet", "drink", "drinks"}
-EXCLUDED_NOUNS = KINSHIP | ABSTRACT | TIME_WORDS | GENERIC | GENERIC_FOOD
+GENERIC_FOOD = {"food", "foods", "meal", "meals", "diet", "drink", "drinks", "water", "dinner", "lunch", "breakfast",
+                "supper", "brunch", "ingredient", "ingredients", "goodie", "goodies", "leftover", "leftovers", "treat", "treats"}
+NOT_OBJECTS = {"work", "weight", "round", "shopping", "internet", "snowflake", "snow", "rain", "weather", "money",
+               "price", "cost", "game", "trip", "ride", "job", "class", "lesson", "test", "week"}
+EXCLUDED_NOUNS = KINSHIP | ABSTRACT | TIME_WORDS | GENERIC | GENERIC_FOOD | NOT_OBJECTS
 
 # Lexicons: category -> (terms, tier). Case-insensitive, optional plural 's'.
 LEXICONS = {
@@ -120,10 +130,11 @@ LEXICON_RES = {cat: (_word_regex(terms), tier) for cat, (terms, tier) in LEXICON
 
 HONORIFIC_RE = re.compile(r"\b(?:Mr|Mrs|Ms|Mx|Dr|Prof|Miss)\b\.?(?=\s+[A-Z])")  # case-sensitive
 
+_NUM = r"(?:\d{1,3}(?:,\d{3})+|\d+)(?:\.\d+)?"      # '2,500' / '10' / '12.50'; never a trailing comma
 CURRENCY_RES = [
-    re.compile(r"\$\s?(?:\d[\d,]*(?:\.\d+)?|\.\d+)(?:\s?(?:thousand|million|billion))?", re.I),
-    re.compile(r"(?<![\w$])\d[\d,]*(?:\.\d+)?\s?(?:dollars?|cents?|bucks)\b", re.I),
-    re.compile(r"(?<![\w$])\d+(?:\.\d+)?\s?¢"),
+    re.compile(r"\$\s?(?:" + _NUM + r"|\.\d+)(?:\s?(?:thousand|million|billion))?", re.I),
+    re.compile(r"(?<![\w$.])" + _NUM + r"\s?(?:dollars?|cents?|bucks)\b", re.I),
+    re.compile(r"(?<![\w$.])" + _NUM + r"\s?¢"),
 ]
 CURRENCY_WORD_RE = re.compile(r"\b(?:dollars?|cents?|bucks?|nickels?|dimes?|pennies|penny)\b", re.I)
 
@@ -150,6 +161,8 @@ OBJECT_LEXNAMES = {"noun.food": "Food", "noun.artifact": "Object",
 # almost certainly not being used as food ('birds', 'starfish', 'shoes').
 FOOD_DEMOTE_FIRST = {"noun.animal", "noun.artifact", "noun.attribute", "noun.body",
                      "noun.location"}
+ABSTRACT_FIRST = {"noun.act", "noun.attribute", "noun.cognition", "noun.event", "noun.state", "noun.time",
+                  "noun.quantity", "noun.phenomenon", "noun.process", "noun.relation", "noun.feeling", "noun.motive"}
 BAD_ENTS = {"PERSON", "DATE", "TIME", "MONEY", "CARDINAL", "QUANTITY", "PERCENT", "ORDINAL"}
 QUANTIFIERS = {"how", "what", "which", "many", "much", "more", "most", "less", "least",
                "twice", "enough", "several", "few", "remaining", "only", "final", "other",
@@ -174,6 +187,8 @@ class Cand:
     sources: set
     tier: int                       # 1 = high confidence, 2 = review, 3 = low-value
     score: Optional[float] = None   # best model confidence, if any
+    lemma: Optional[str] = None     # grouping key for plurals ('ships' -> 'ship')
+    pool: Optional[str] = None      # suggested replacement pool (objects/animals/plants/food from WordNet)
 
     @property
     def span(self):
@@ -215,6 +230,13 @@ def load_problems(path=GSM8K_CSV_PATH, column=None):
     if n_markup:
         print(f"Stripped the [INST] template from {n_markup} rows; using question text only.")
     return problems
+
+
+EXTRA_NAMES = {"Weng", "Juan", "Jose", "Pedro", "Andres", "Emilio", "Ramon", "Antonio", "Manuel", "Carlos", "Miguel", "Rafael",
+               "Angelo", "Paolo", "Jericho", "Renz", "Kenneth", "Noel", "Rodel", "Rey", "Ronnie", "Arnel", "Dante", "Nestor",
+               "Maria", "Ana", "Rosa", "Luz", "Carmen", "Josefa", "Teresa", "Elena", "Lourdes", "Cristina", "Jasmine", "Jessa",
+               "Maricel", "Marites", "Liza", "Rowena", "Nena", "Perla", "Corazon", "Imelda", "Divina", "Estrella", "Jocelyn",
+               "Maribel", "Rhea", "Yolanda", "Mei", "Lin", "Wei", "Li", "Chen", "Yuki", "Hiro", "Kenji", "Priya", "Arjun", "Aisha"}
 
 
 def load_term_list(path):
@@ -291,7 +313,10 @@ def wn_category(lemma):
     """Generic-object classification from the first WN_SENSES senses."""
     if wn is None:
         return None
-    for syn in wn.synsets(lemma, pos="n")[:WN_SENSES]:
+    syns = wn.synsets(lemma, pos="n")
+    if syns and syns[0].lexname() in ABSTRACT_FIRST:
+        return None
+    for syn in syns[:WN_SENSES]:
         cat = OBJECT_LEXNAMES.get(syn.lexname())
         if cat:
             return cat
@@ -338,6 +363,14 @@ def food_verdict(span_text):
     return ("Food?", 3)
 
 
+def weak_single_word(doc, s, e, srcs):
+    """One-token ORG/Place with a single vote whose POS is not PROPN ('Next', 'Then', 'Today'): a common word, not an entity."""
+    if len(srcs) > 1 or not hasattr(doc, "char_span"):
+        return False
+    span = doc.char_span(s, e, alignment_mode="expand")
+    return span is not None and len(span) == 1 and span[0].pos_ not in ("PROPN", "X", "")
+
+
 def looks_like_person(doc, s, e, word, names):
     """Single-word ORG/Place guess that is really a name: a known first name,
     or the grammatical subject of a verb ('Jerry sold ...')."""
@@ -350,6 +383,84 @@ def looks_like_person(doc, s, e, word, names):
         tok = char_span[0]
         return (tok.dep_ in ("nsubj", "nsubjpass") and tok.head.pos_ == "VERB"), False
     return False, False
+
+
+# ============================================================================
+# SUPPORT VOTES FOR OBJECTS (independent evidence beyond WordNet)
+# ============================================================================
+# WordNet hypernym stem -> pool, most specific first (first match wins)
+HYPERNYM_POOLS = [("domestic_animal", "Pets"), ("bird", "Birds"), ("insect", "Insects & small creatures"),
+                  ("fish", "Aquatic animals"), ("shellfish", "Aquatic animals"), ("mammal", "Wild animals"),
+                  ("clothing", "Clothing & accessories"), ("garment", "Clothing & accessories"),
+                  ("footwear", "Clothing & accessories"), ("container", "Containers & packaging"),
+                  ("furniture", "Household & furniture"), ("kitchenware", "Household & furniture"),
+                  ("tableware", "Household & furniture"), ("vehicle", "Vehicles & transport"),
+                  ("plaything", "Toys, games & sports"), ("sports_equipment", "Toys, games & sports"),
+                  ("building", "Places & buildings"), ("tree", "Plants & nature"), ("flower", "Plants & nature"),
+                  ("fruit", "Fruit"), ("vegetable", "Vegetable"), ("beverage", "Beverages"),
+                  ("baked_goods", "Baked goods"), ("dairy_product", "Eggs & dairy"), ("meat", "Meat & poultry"),
+                  ("candy", "Candy & sweets")]
+QUANT_CHILD = {"many", "few", "several", "couple", "dozen", "each", "every", "more"}
+MEASURE_NOUNS = {"box", "pack", "bag", "pair", "dozen", "bunch", "jar", "can", "bottle", "carton", "slice", "piece", "cup",
+                 "pound", "gallon", "tray", "crate", "basket", "bowl", "plate", "stack", "set", "group", "row", "case"}
+
+
+def _forms(word):
+    w = word.lower(); out = [w]
+    if w.endswith("ies"): out.append(w[:-3] + "y")
+    if w.endswith("es"): out.append(w[:-2])
+    if w.endswith("s"): out.append(w[:-1])
+    return out
+
+
+@lru_cache(maxsize=None)
+def hypernym_pool(lemma):
+    """Suggested pool from the WordNet hypernym path ('shirt' -> garment -> clothing). Not an independent vote."""
+    if wn is None:
+        return None
+    try:
+        for syn in wn.synsets(lemma, pos="n")[:WN_SENSES]:
+            stems = {syn.name().split(".")[0]} | {h.name().split(".")[0] for h in syn.closure(lambda x: x.hypernyms())}
+            for stem, pool in HYPERNYM_POOLS:
+                if stem in stems:
+                    return pool
+    except Exception:
+        return None
+    return None
+
+
+def is_counted(tok):
+    """The problem itself counts/measures this noun: '7 starfish', 'how many gnomes', 'a box of cookies'."""
+    kids = list(getattr(tok, "children", ()))
+    if any(c.dep_ == "nummod" or c.text.lower() in QUANT_CHILD for c in kids):
+        return True
+    head = getattr(tok, "head", None)
+    return bool(tok.dep_ == "pobj" and head is not None and head.text.lower() == "of"
+                and getattr(head, "head", None) is not None and head.head.lemma_.lower() in MEASURE_NOUNS)
+
+
+def is_concrete(lemma):
+    return bool(CONCRETENESS) and CONCRETENESS.get(lemma.split()[-1], 0) >= CONCRETE_MIN
+
+
+def load_concreteness(path):
+    """Brysbaert et al. (2014) concreteness ratings: columns 'Word' and 'Conc.M' (.txt/.tsv/.csv/.xlsx)."""
+    rows = []
+    if path.lower().endswith(".xlsx"):
+        ws = load_workbook(path, read_only=True, data_only=True).worksheets[0]
+        rows = [list(r) for r in ws.iter_rows(values_only=True)]
+    else:
+        with open(path, encoding="utf-8-sig", newline="") as f:
+            first = f.readline(); f.seek(0)
+            rows = list(csv.reader(f, delimiter="\t" if "\t" in first else ","))
+    head = [str(h).strip().lower() for h in rows[0]]
+    wi, ci = head.index("word"), head.index("conc.m")
+    for r in rows[1:]:
+        try:
+            CONCRETENESS[str(r[wi]).strip().lower()] = float(r[ci])
+        except (ValueError, TypeError, IndexError):
+            continue
+    print(f"Loaded {len(CONCRETENESS)} concreteness ratings from {path}")
 
 
 # ============================================================================
@@ -412,6 +523,8 @@ def collect(text, doc, hf_ents, food_ents, names=frozenset()):
                 if person:
                     cat = "Proper Name"
                     srcs.add("gazetteer" if in_names else "reassigned")
+            if cat in ("Organization", "Place", "Nationality/Group", "Product", "Work of Art") and weak_single_word(doc, s, e, srcs):
+                continue
             votes = len(srcs - {"reassigned"})
             cands.append(Cand(s, e, word, cat, srcs, 1 if votes >= 2 else 2, sc))
 
@@ -438,10 +551,20 @@ def collect(text, doc, hf_ents, food_ents, names=frozenset()):
         # extend left over noun-noun compounds only ("care package", "boarding school")
         while (start > 0 and doc[start - 1].dep_ == "compound"
                and doc[start - 1].head.i >= start
+               and doc[start - 1].text.isalpha()
                and doc[start - 1].pos_ in ("NOUN", "VERB", "ADJ")
                and doc[start - 1].text.lower() not in QUANTIFIERS):
             start -= 1
         add(doc[start].idx, tok.idx + len(tok.text), cat, "wordnet", 2 if cat == "Food" else 3)
+        c = cands[-1]
+        c.lemma = " ".join([t.text.lower() for t in doc[start:tok.i]] + [tok.lemma_.lower()])
+        if is_counted(tok):
+            c.sources.add("counted")
+        if is_concrete(tok.lemma_):
+            c.sources.add("concrete")
+        c.pool = hypernym_pool(tok.lemma_.lower())
+        if cat != "Food" and len(c.sources) >= 2:
+            c.tier = 2                       # WordNet + at least one independent vote
 
     if REJECT_TERMS:
         cands = [c for c in cands if c.text.lower() not in REJECT_TERMS]
@@ -489,8 +612,8 @@ def run_hf(pipe, texts):
 def load_nltk_resources():
     names = set()
     if nltk is None:
-        print("[warn] nltk not installed: no name gazetteer, no WordNet filters")
-        return names
+        print("[warn] nltk not installed: no NLTK name list, no WordNet filters")
+        return EXTRA_NAMES | {n.title() for n in load_term_list(EXTRA_NAMES_FILE)}
     for pkg in ("wordnet", "names"):
         try:
             wn.synsets("dog") if pkg == "wordnet" else nltk_names.words()
@@ -500,14 +623,14 @@ def load_nltk_resources():
         names = set(nltk_names.words())
     except LookupError:
         print("[warn] NLTK 'names' corpus unavailable")
-    return names
+    return names | EXTRA_NAMES | {n.title() for n in load_term_list(EXTRA_NAMES_FILE)}
 
 
 # ============================================================================
 # REPORTING
 # ============================================================================
 HEADERS = ["Problem #", "Candidate", "Context", "Category", "Tier", "Sources", "Score",
-           "Count", "Decision", "Final Category", "Localized Replacement"]
+           "Count", "Suggested Pool", "Decision", "Final Category", "Localized Replacement"]
 TIER_FILL = {1: "E2EFDA", 2: "FFF2CC", 3: "EDEDED"}
 
 
@@ -522,7 +645,7 @@ def build_rows(problems, results):
     for i, (text, cands) in enumerate(zip(problems, results), 1):
         groups = {}
         for c in cands:  # one row per unique (term, category) per problem
-            key = (c.text.lower(), c.category)
+            key = (c.lemma or c.text.lower(), c.category)
             if key in groups:
                 g = groups[key]
                 g[1] += 1
@@ -530,12 +653,13 @@ def build_rows(problems, results):
                 g[0].tier = min(g[0].tier, c.tier)
                 if c.score is not None and (g[0].score is None or c.score > g[0].score):
                     g[0].score = c.score
+                g[0].pool = g[0].pool or c.pool
             else:
                 groups[key] = [c, 1]
         for c, count in sorted(groups.values(), key=lambda g: (g[0].tier, g[0].start)):
             rows.append((i, c.text, context_snippet(text, c), c.category, c.tier,
                          ", ".join(sorted(c.sources)),
-                         None if c.score is None else round(c.score, 2), count))
+                         None if c.score is None else round(c.score, 2), count, c.pool or ""))
     return rows
 
 
@@ -546,7 +670,7 @@ def write_report(problems, results, path):
     ws.append(HEADERS)
     rows = build_rows(problems, results)
     for r in rows:
-        ws.append(list(r) + ["", "", ""])
+        ws.append(list(r) + ["", "", ""])   # Decision, Final Category, Localized Replacement
 
     head_fill = PatternFill("solid", start_color="D9E1F2", end_color="D9E1F2")
     for cell in ws[1]:
@@ -559,7 +683,7 @@ def write_report(problems, results, path):
         t = row[tier_ix].value
         if t in TIER_FILL:
             row[tier_ix].fill = PatternFill("solid", start_color=TIER_FILL[t], end_color=TIER_FILL[t])
-    widths = (10, 22, 60, 18, 6, 22, 7, 7, 11, 18, 24)
+    widths = (10, 22, 60, 18, 6, 26, 7, 7, 24, 11, 22, 24)
     for i, w in enumerate(widths, 1):
         ws.column_dimensions[get_column_letter(i)].width = w
     ws.freeze_panes = "A2"
@@ -684,6 +808,7 @@ def main():
     ap.add_argument("--column")
     ap.add_argument("--out", default="gsmph_candidates.xlsx")
     ap.add_argument("--limit", type=int, help="only process the first N problems")
+    ap.add_argument("--concreteness", metavar="FILE", help="Brysbaert concreteness ratings (.txt/.csv/.xlsx): extra object vote")
     ap.add_argument("--precision-report", metavar="REVIEWED_XLSX")
     ap.add_argument("--learn-rejects", metavar="REVIEWED_XLSX")
     args = ap.parse_args()
@@ -694,6 +819,8 @@ def main():
     if args.learn_rejects:
         learn_rejects(args.learn_rejects)
         return
+    if args.concreteness:
+        load_concreteness(args.concreteness)
     problems = load_problems(args.csv, args.column)
     if args.limit:
         problems = problems[:args.limit]
