@@ -1,0 +1,301 @@
+﻿specific_subcategory,parent_group,candidate_rows,handling,pool_or_rule
+name_given_male,Person names,4261,Term pool,Person name
+name_given_female,Person names,3293,Term pool,Person name
+currency_usd_amount_whole_small,Currency,1773,Rule-based,RULE: currency amount (scale + PH prices)
+currency_usd_amount_whole_medium,Currency,1324,Rule-based,RULE: currency amount (scale + PH prices)
+currency_usd_amount_whole_large,Currency,513,Rule-based,RULE: currency amount (scale + PH prices)
+unit_weight_pound_ounce,Imperial units,485,Rule-based,RULE: imperial to metric unit
+currency_usd_amount_decimal,Currency,459,Rule-based,RULE: currency amount (scale + PH prices)
+unit_length_foot_inch_yard,Imperial units,424,Rule-based,RULE: imperial to metric unit
+place_home_residence,Places & buildings,357,Term pool,Places & buildings
+unit_length_mile,Imperial units,324,Rule-based,RULE: imperial to metric unit
+place_school_k12,Places & buildings,323,Term pool,Places & buildings
+currency_usd_word_dollar,Currency,321,Term pool,Currency word
+currency_usd_amount_whole_very_large,Currency,299,Rule-based,RULE: currency amount (scale + PH prices)
+media_book_reading,Books & media,291,Term pool,Books & media
+container_box_carton_crate,Containers & packaging,282,Term pool,Containers & packaging
+name_given_gender_unknown,Person names,275,Term pool,Person name
+animal_pet_dog,Pets,270,Term pool,Pets
+food_fruit_pome_stone,Fruit,253,Term pool,Fruit
+food_baked_cookie_biscuit_bar,Baked goods,251,Term pool,Baked goods
+food_candy_hard_gummy,Candy & sweets,245,Term pool,Candy & sweets
+vehicle_car_passenger,Vehicles & transport,238,Term pool,Vehicles & transport
+name_ambiguous_common_word_review,Person names,200,Manual review,REVIEW
+plant_flower,Plants & nature,198,Term pool,Plants & nature
+unit_volume_gallon_quart_pint,Imperial units,193,Rule-based,RULE: imperial to metric unit
+food_baked_cake_cupcake,Baked goods,188,Term pool,Baked goods
+container_bag_sack,Containers & packaging,188,Term pool,Containers & packaging
+place_market_grocery,Places & buildings,175,Term pool,Places & buildings
+non_object_abstract_review,Misc,166,Manual review,REVIEW
+org_proper_unclassified_review,Brands & organizations,161,Manual review,REVIEW
+animal_farm_poultry,Farm animals,159,Term pool,Farm animals
+plant_part,Plants & nature,152,Term pool,Plants & nature
+container_jar_tub,Containers & packaging,152,Term pool,Containers & packaging
+school_supply_writing,School & office supplies,152,Term pool,School & office supplies
+place_yard_garden_outdoor,Places & buildings,151,Term pool,Places & buildings
+food_dish_sandwich_burger,Prepared dishes,148,Term pool,Meals & fast food
+place_structure_wall_door,Places & buildings,148,Term pool,Places & buildings
+place_room_generic_floor,Places & buildings,145,Term pool,Places & buildings
+people_role_generic,Groups & roles,138,Keep (no substitution),KEEP
+toy_marble_bead_small,"Toys, games & sports",134,Term pool,"Toys, games & sports"
+food_dish_pizza_pasta,Prepared dishes,134,Term pool,Meals & fast food
+plant_tree_generic,Plants & nature,133,Term pool,Plants & nature
+kitchen_drinkware,Household & furniture,133,Term pool,Household & furniture
+clothing_top_shirt,Clothing & accessories,132,Term pool,Clothing & accessories
+container_bottle_flask,Containers & packaging,129,Term pool,Containers & packaging
+food_baked_pie_pastry,Baked goods,127,Term pool,Baked goods
+currency_usd_coin_cent_penny,Currency,126,Rule-based,RULE: currency amount (scale + PH prices)
+food_baked_bread,Baked goods,126,Term pool,Baked goods
+hardware_fastener_building,Tools & hardware,122,Term pool,Tools & hardware
+food_fruit_citrus,Fruit,122,Term pool,Fruit
+place_road_path_bridge,Places & buildings,121,Term pool,Places & buildings
+place_building_tower_other,Places & buildings,121,Term pool,Places & buildings
+food_egg,Eggs & dairy,119,Term pool,Eggs & dairy
+animal_wild_mammal_large,Wild animals,118,Term pool,Wild animals
+food_portion_slice_piece,Prepared dishes,118,Keep (no substitution),KEEP
+media_art_picture,Books & media,118,Term pool,Books & media
+food_candy_chocolate,Candy & sweets,117,Term pool,Candy & sweets
+food_dish_meal_generic,Prepared dishes,116,Term pool,Meals & fast food
+animal_bird_wild_pet,Birds,114,Term pool,Birds
+craft_material_supply,Materials & supplies,113,Term pool,School & office supplies
+food_pantry_baking_staple,Pantry & ingredients,109,Term pool,Staples & ingredients
+animal_pet_cat,Pets,107,Term pool,Pets
+food_snack_savory,Snacks,107,Term pool,Snacks
+food_fruit_tropical,Fruit,103,Term pool,Fruit
+clothing_footwear_shoe,Clothing & accessories,103,Term pool,Clothing & accessories
+place_farm_ranch,Places & buildings,101,Term pool,Places & buildings
+food_veg_fruiting,Vegetable,101,Term pool,Vegetable
+object_generic_item,Misc,100,Keep (no substitution),KEEP
+food_fruit_generic,Fruit,98,Term pool,Fruit
+machine_equipment_device,Tools & hardware,97,Term pool,Tools & hardware
+container_basket_bin,Containers & packaging,96,Term pool,Containers & packaging
+school_supply_paper_notebook,School & office supplies,95,Term pool,School & office supplies
+place_geo_other_review,Geographic places,95,Manual review,REVIEW
+food_fruit_berry_vine,Fruit,95,Term pool,Fruit
+honorific_mr_male_formal,Honorifics,94,Term pool,Honorifics
+electronics_computer_peripheral,Electronics,92,Term pool,Electronics
+media_video_music,Books & media,90,Term pool,Books & media
+kitchen_tableware_dish,Household & furniture,89,Term pool,Household & furniture
+animal_aquatic_fish,Aquatic animals,88,Term pool,Aquatic animals
+place_mall_department,Places & buildings,88,Term pool,Places & buildings
+food_bev_coffee_tea,Beverages,86,Term pool,Beverages
+vehicle_bicycle_bike,Vehicles & transport,86,Term pool,Vehicles & transport
+place_shop_clothing_shoe,Places & buildings,86,Term pool,Places & buildings
+place_restaurant_diner,Places & buildings,85,Term pool,Places & buildings
+food_pantry_condiment_sauce,Pantry & ingredients,84,Term pool,Staples & ingredients
+accessory_jewelry,Clothing & accessories,81,Term pool,Clothing & accessories
+food_frozen_dessert,Candy & sweets,81,Term pool,Frozen treats
+animal_insect_crawling,Insects & small creatures,80,Term pool,Insects & small creatures
+animal_wild_mammal_small,Wild animals,78,Term pool,Wild animals
+place_room_bedroom_bath,Places & buildings,78,Term pool,Places & buildings
+place_zoo_aquarium_park,Places & buildings,77,Term pool,Places & buildings
+toy_ball_sports_ball,"Toys, games & sports",77,Term pool,"Toys, games & sports"
+vehicle_part_tire_wheel,Vehicles & transport,77,Keep (no substitution),KEEP
+container_package_envelope,Containers & packaging,76,Term pool,Containers & packaging
+food_bev_juice_lemonade,Beverages,76,Term pool,Beverages
+furniture_storage_shelf,Household & furniture,76,Term pool,Household & furniture
+np_scan_unclassified_review,,76,Manual review,REVIEW
+plant_houseplant_garden,Plants & nature,74,Term pool,Plants & nature
+household_textile,Household & furniture,72,Term pool,Household & furniture
+furniture_table_desk,Household & furniture,72,Term pool,Household & furniture
+personal_care_hygiene,Personal care & health,71,Term pool,Health & personal care
+place_library_museum,Places & buildings,71,Term pool,Places & buildings
+animal_aquarium_fish,Aquatic animals,70,Term pool,Pets
+body_part_human,People & body,70,Keep (no substitution),KEEP
+food_bev_soft_drink,Beverages,70,Term pool,Beverages
+household_lighting_decor,Household & furniture,69,Term pool,Household & furniture
+container_can_tin,Containers & packaging,69,Term pool,Containers & packaging
+food_dairy_milk_cream,Eggs & dairy,68,Term pool,Eggs & dairy
+animal_reptile,Reptiles & amphibians,67,Term pool,Wild animals
+accessory_bag_wallet_luggage,Clothing & accessories,66,Term pool,Clothing & accessories
+animal_farm_cattle,Farm animals,64,Term pool,Farm animals
+food_seafood,Meat & poultry,64,Term pool,Aquatic animals
+unit_area_acre_sqft,Imperial units,63,Rule-based,RULE: imperial to metric unit
+electronics_phone_tablet,Electronics,63,Term pool,Electronics
+currency_usd_coin_nickel_dime_quarter,Currency,63,Rule-based,RULE: currency amount (scale + PH prices)
+food_dairy_cheese_butter,Eggs & dairy,62,Term pool,Eggs & dairy
+food_veg_root_tuber,Vegetable,62,Term pool,Vegetable
+material_metal_mineral,Materials & supplies,61,Keep (no substitution),KEEP
+place_office_bank_civic,Places & buildings,61,Term pool,Places & buildings
+animal_aquatic_shellfish_other,Aquatic animals,59,Term pool,Aquatic animals
+electronics_tv_audio_camera,Electronics,59,Term pool,Electronics
+furniture_seating,Household & furniture,58,Term pool,Household & furniture
+toy_card_trading_collectible,"Toys, games & sports",58,Term pool,"Toys, games & sports"
+clothing_generic,Clothing & accessories,58,Term pool,Clothing & accessories
+vehicle_bus_transit,Vehicles & transport,57,Term pool,Vehicles & transport
+name_fullname_gender_unknown,Person names,55,Term pool,Person name
+animal_farm_swine,Farm animals,55,Term pool,Farm animals
+vehicle_truck_van_trailer,Vehicles & transport,55,Term pool,Vehicles & transport
+place_factory_warehouse,Places & buildings,55,Term pool,Places & buildings
+animal_farm_sheep_goat,Farm animals,54,Term pool,Farm animals
+medicine_health_item,Personal care & health,54,Term pool,Health & personal care
+place_geo_us_state,Geographic places,53,Term pool,Place - US/foreign city or state
+place_enclosure_cage_pen,Places & buildings,53,Term pool,Places & buildings
+place_room_kitchen_living,Places & buildings,53,Term pool,Places & buildings
+name_surname,Person names,52,Term pool,Surname
+appliance_kitchen,Household & furniture,52,Term pool,Household & furniture
+vehicle_water_boat,Vehicles & transport,52,Term pool,Vehicles & transport
+music_instrument,Music & instruments,51,Term pool,Music & instruments
+vehicle_generic_ride,Vehicles & transport,51,Term pool,Vehicles & transport
+food_veg_generic,Vegetable,51,Term pool,Vegetable
+name_given_unisex,Person names,50,Term pool,Person name
+place_geo_country,Geographic places,49,Term pool,Place - country/region
+culture_sport_american_football,Sports & activities,49,Term pool,Sports & activities
+name_fullname_male,Person names,48,Term pool,Person name
+culture_sport_baseball_softball,Sports & activities,48,Term pool,Sports & activities
+money_payment_instrument,Money & payment,48,Term pool,Money & payment
+toy_balloon_kite_flying,"Toys, games & sports",47,Term pool,"Toys, games & sports"
+food_meat_pork_processed,Meat & poultry,47,Term pool,Meat & poultry
+place_gym_sport_venue,Places & buildings,47,Term pool,Places & buildings
+food_dish_soup_salad_stew,Prepared dishes,47,Term pool,Meals & fast food
+honorific_mrs_female_married,Honorifics,47,Term pool,Honorifics
+vehicle_air,Vehicles & transport,46,Term pool,Vehicles & transport
+place_transport_hub,Places & buildings,45,Term pool,Places & buildings
+place_nature_water_land,Places & buildings,45,Term pool,Places & buildings
+food_veg_legume_corn,Vegetable,45,Term pool,Vegetable
+toy_block_puzzle_build,"Toys, games & sports",45,Term pool,"Toys, games & sports"
+place_pool_swimming,Places & buildings,43,Term pool,Places & buildings
+clothing_bottom,Clothing & accessories,43,Term pool,Clothing & accessories
+toy_generic,"Toys, games & sports",43,Term pool,"Toys, games & sports"
+food_meat_beef,Meat & poultry,42,Term pool,Meat & poultry
+place_shop_book_stationery,Places & buildings,40,Term pool,Places & buildings
+school_supply_tool_other,School & office supplies,40,Term pool,School & office supplies
+kitchen_cutlery_utensil,Household & furniture,40,Term pool,Household & furniture
+appliance_laundry_cleaning_hvac,Household & furniture,40,Term pool,Household & furniture
+animal_insect_flying,Insects & small creatures,39,Term pool,Insects & small creatures
+place_geo_city,Geographic places,38,Term pool,Place - US/foreign city or state
+food_nut_seed,Snacks,37,Term pool,Staples & ingredients
+furniture_bed_bedding,Household & furniture,36,Term pool,Household & furniture
+brand_toy_game_electronics,Brands & organizations,36,Term pool,Brand/company
+sports_equipment_bat_racket,"Toys, games & sports",35,Term pool,"Toys, games & sports"
+unit_speed_mph,Imperial units,35,Rule-based,RULE: imperial to metric unit
+plant_grass_weed_ground,Plants & nature,34,Term pool,Plants & nature
+clothing_outerwear,Clothing & accessories,34,Term pool,Clothing & accessories
+clothing_footwear_sock,Clothing & accessories,34,Term pool,Clothing & accessories
+plant_tree_fruit,Plants & nature,33,Term pool,Plants & nature
+food_veg_leafy_cruciferous,Vegetable,33,Term pool,Vegetable
+place_theater_cinema,Places & buildings,33,Term pool,Places & buildings
+plant_crop_edible,Plants & nature,33,Term pool,Plants & nature
+kitchen_cookware,Household & furniture,33,Term pool,Household & furniture
+clothing_dress_formal,Clothing & accessories,33,Term pool,Clothing & accessories
+culture_micro_commerce_sale,School & social life,32,Term pool,School & social life
+food_meat_generic,Meat & poultry,32,Term pool,Meat & poultry
+honorific_ms_miss_female,Honorifics,32,Term pool,Honorifics
+vehicle_train_rail,Vehicles & transport,31,Term pool,Vehicles & transport
+animal_pet_generic,Pets,31,Term pool,Pets
+food_baked_donut_sweet_roll,Baked goods,30,Term pool,Baked goods
+brand_tech_social_streaming,Brands & organizations,30,Term pool,Brand/company
+clothing_headwear,Clothing & accessories,29,Term pool,Clothing & accessories
+animal_farm_horse_equine,Farm animals,29,Term pool,Farm animals
+food_dessert_generic,Candy & sweets,28,Term pool,Candy & sweets
+food_dish_rice_cereal_grain,Prepared dishes,28,Term pool,Meals & fast food
+animal_amphibian,Reptiles & amphibians,28,Term pool,Wild animals
+food_meat_poultry,Meat & poultry,27,Term pool,Meat & poultry
+container_aquarium_fish_tank,Containers & packaging,27,Term pool,Containers & packaging
+animal_body_part_product,Wild animals,26,Keep (no substitution),KEEP
+clothing_handwear_neckwear,Clothing & accessories,26,Term pool,Clothing & accessories
+event_holiday_christmas,Holidays & events,26,Term pool,Events & activities
+container_generic_vessel,Containers & packaging,25,Term pool,Containers & packaging
+food_dish_fried_fastfood,Prepared dishes,25,Term pool,Meals & fast food
+container_tank_water_storage,Containers & packaging,25,Term pool,Containers & packaging
+unclassified_review,Unclassified,24,Manual review,REVIEW
+food_fruit_melon,Fruit,24,Term pool,Fruit
+place_shop_flower_gift,Places & buildings,24,Term pool,Places & buildings
+place_shop_bakery_deli,Places & buildings,23,Term pool,Places & buildings
+place_service_salon_spa_laundry,Places & buildings,23,Term pool,Places & buildings
+health_pathogen_disease,People & body,22,Keep (no substitution),KEEP
+group_team_class_people,Groups & roles,22,Keep (no substitution),KEEP
+tool_garden_outdoor,Tools & hardware,22,Term pool,Tools & hardware
+container_tank_fuel_gas,Containers & packaging,22,Term pool,Containers & packaging
+toy_doll_plush_figure,"Toys, games & sports",22,Term pool,"Toys, games & sports"
+clothing_uniform_costume,Clothing & accessories,21,Term pool,Clothing & accessories
+culture_school_life_place,School & social life,21,Term pool,School & social life
+accessory_eyewear_watch,Clothing & accessories,20,Term pool,Clothing & accessories
+place_hotel_lodging,Places & buildings,20,Term pool,Places & buildings
+animal_descriptor_stage_sex,Wild animals,19,Keep (no substitution),KEEP
+sports_event_competition,Sports & activities,19,Term pool,Sports & activities
+game_card_playing,"Toys, games & sports",19,Term pool,"Toys, games & sports"
+toy_game_board_card_video,"Toys, games & sports",19,Term pool,"Toys, games & sports"
+vehicle_motorcycle_atv,Vehicles & transport,19,Term pool,Vehicles & transport
+culture_childcare_babysitting,School & social life,18,Term pool,School & social life
+name_fullname_female,Person names,18,Term pool,Person name
+electronics_battery_power,Electronics,18,Term pool,Electronics
+animal_feed_supply,Pets,18,Term pool,Pets
+brand_retail_food_chain,Brands & organizations,18,Term pool,Brand/company
+food_baked_pancake_waffle,Baked goods,18,Term pool,Baked goods
+place_shop_pet_animal,Places & buildings,18,Term pool,Places & buildings
+culture_sports_record_achievement,Sports & activities,18,Term pool,Sports & activities
+place_shop_toy_game,Places & buildings,18,Term pool,Places & buildings
+object_weapon_blade_gun,"Toys, games & sports",17,Keep (no substitution),KEEP
+food_pantry_spice_herb,Pantry & ingredients,17,Term pool,Staples & ingredients
+place_shop_jewelry_beauty,Places & buildings,17,Term pool,Places & buildings
+place_shop_bicycle_sports,Places & buildings,17,Term pool,Places & buildings
+brand_food_candy_snack,Brands & organizations,17,Term pool,Brand/company
+place_shop_electronics,Places & buildings,17,Term pool,Places & buildings
+plant_crop_field,Plants & nature,17,Term pool,Plants & nature
+food_bev_alcohol,Beverages,16,Term pool,Beverages
+food_nutrition_term,Nutrition terms,16,Keep (no substitution),KEEP
+culture_travel_road_trip,School & social life,16,Term pool,School & social life
+brand_online_marketplace,Brands & organizations,15,Term pool,Brand/company
+tool_hand_general,Tools & hardware,15,Term pool,Tools & hardware
+animal_generic,Wild animals,15,Term pool,Wild animals
+food_veg_mushroom,Vegetable,15,Term pool,Vegetable
+place_hospital_clinic,Places & buildings,15,Term pool,Places & buildings
+place_geo_region_continent,Geographic places,14,Term pool,Place - country/region
+container_pack_set_bundle,Containers & packaging,14,Term pool,Containers & packaging
+household_cleaning_supply,Household & furniture,14,Term pool,Household & furniture
+food_veg_allium,Vegetable,14,Term pool,Vegetable
+culture_school_life_event,School & social life,14,Term pool,School & social life
+sports_equipment_fitness,"Toys, games & sports",13,Term pool,"Toys, games & sports"
+food_bev_shake_smoothie,Beverages,13,Term pool,Beverages
+animal_aquatic_mammal,Aquatic animals,12,Term pool,Aquatic animals
+org_sports_team_league,Brands & organizations,12,Term pool,Sports teams & leagues
+place_religious,Places & buildings,12,Term pool,Places & buildings
+vehicle_scooter_skate,Vehicles & transport,12,Term pool,Vehicles & transport
+name_title_occupation,Person names,11,Term pool,Titles & relations
+place_geo_celestial,Geographic places,11,Keep (no substitution),KEEP
+sports_equipment_protective_gear,"Toys, games & sports",11,Term pool,Clothing & accessories
+plant_bush_vine,Plants & nature,10,Term pool,Plants & nature
+event_holiday_halloween,Holidays & events,10,Term pool,Events & activities
+brand_apparel_footwear,Brands & organizations,9,Term pool,Brand/company
+party_gift_decor,Party & gifts,9,Term pool,Party & gifts
+place_shop_hardware_home,Places & buildings,9,Term pool,Places & buildings
+name_title_relation_male,Person names,9,Term pool,Titles & relations
+culture_sport_hockey,Sports & activities,9,Term pool,Sports & activities
+culture_school_life_level,School & social life,9,Term pool,School & social life
+name_title_relation_female,Person names,8,Term pool,Titles & relations
+place_shop_bakery_sweets,Places & buildings,8,Term pool,Places & buildings
+place_cafe_coffee_shop,Places & buildings,8,Term pool,Places & buildings
+place_shop_music_media,Places & buildings,8,Term pool,Places & buildings
+place_shelter_charity_rescue,Places & buildings,7,Term pool,Places & buildings
+place_geo_natural_landmark,Geographic places,7,Term pool,Landmarks & nature places
+event_holiday_valentine_mothers_day,Holidays & events,7,Term pool,Events & activities
+accessory_hair_beauty,Clothing & accessories,6,Term pool,Clothing & accessories
+stationery_card_greeting,School & office supplies,6,Term pool,School & office supplies
+animal_fantasy_extinct,Wild animals,6,Keep (no substitution),KEEP
+honorific_doctor_professional,Honorifics,6,Term pool,Honorifics
+event_competition_games,Holidays & events,6,Term pool,Events & activities
+plant_tree_forest_ornamental,Plants & nature,6,Term pool,Plants & nature
+event_other_review,Holidays & events,5,Manual review,REVIEW
+food_bev_water_generic,Beverages,5,Term pool,Beverages
+food_snack_bar_energy,Snacks,5,Term pool,Snacks
+household_trash_can,Household & furniture,5,Term pool,Containers & packaging
+animal_pet_small_mammal,Pets,5,Term pool,Pets
+org_government_tax,Brands & organizations,5,Term pool,Institution/government
+sports_recreation_outdoor_gear,"Toys, games & sports",5,Term pool,"Toys, games & sports"
+place_university_college,Places & buildings,5,Term pool,Place/institution name
+clothing_underwear_sleep,Clothing & accessories,4,Term pool,Clothing & accessories
+attribute_color_adjective_review,Misc,4,Manual review,REVIEW
+misc_health_term_not_brand,Brands & organizations,4,Keep (no substitution),KEEP
+unit_temperature_fahrenheit,Imperial units,4,Rule-based,RULE: imperial to metric unit
+event_school_grade_level,Holidays & events,4,Keep (no substitution),KEEP
+event_holiday_new_year,Holidays & events,4,Term pool,Events & activities
+brand_software,Brands & organizations,3,Term pool,Brand/company
+event_holiday_thanksgiving,Holidays & events,3,Term pool,Events & activities
+brand_health_pharma,Brands & organizations,3,Term pool,Brand/company
+tool_hand_digging_cutting,Tools & hardware,2,Term pool,Tools & hardware
+admin_record_data,School & office supplies,2,Term pool,School & office supplies
+culture_social_party,School & social life,2,Term pool,School & social life
+event_commercial_sale,Holidays & events,1,Term pool,Events & activities
+culture_youth_organization,School & social life,1,Term pool,School & social life
+event_holiday_easter_july4,Holidays & events,1,Term pool,Events & activities
